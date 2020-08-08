@@ -32,8 +32,7 @@ module.exports = class Server {
 
             socket.on("put", clientData => {
                 this.table.putCard(clientData)
-                console.log(clientData);
-                this.io.emit("updateBoard", clientData)
+                //console.log(clientData)
                 socket.emit("sendTable",this.table)
             });
         });
