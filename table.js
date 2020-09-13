@@ -3,7 +3,6 @@ const { before } = require("lodash");
 module.exports = class Table {
     constructor() {
         this.table = Array(4).fill([]);
-        this.pointsOnLane = Array(4).fill(0);
     }
 
     putCard(clientData) {
@@ -13,6 +12,7 @@ module.exports = class Table {
         --fieldId
         try {
             if (this.table[fieldId].length > 0) {
+                this.table[fieldId]=this.removeDuplicate(fieldId,card.id)
                 this.table[fieldId].push(card);
                 this.table[fieldId] = this.sortCardOnLine(this.table[fieldId]);
                 this.updatePostionOnLines(clientData.field);
@@ -40,4 +40,7 @@ module.exports = class Table {
         })
     }
 
+    removeDuplicate(fieldId,cardId){
+        return this.table[fieldId].filter(card=>card.id!=cardId)
+    }
 }
