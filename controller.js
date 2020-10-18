@@ -6,7 +6,6 @@ const Table = require('./table');
 module.exports = class Controller {
 
     constructor() {
-        // this.PORT = 3000 || process.env.PORT
         this.app = express();
         this.httpServer = http.createServer(this.app);
         this.io = socketIO(this.httpServer);
@@ -19,7 +18,7 @@ module.exports = class Controller {
 
     handleRoutes() {
         this.app.get("/", (req, res) => {
-            res.send('hello');
+            res.send('Hello world!!');
         });
     }
 
