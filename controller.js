@@ -1,12 +1,12 @@
-const express = require("express");
-const socketIO = require("socket.io");
-const http = require("http");
-const Table = require("./table");
+const express = require('express');
+const socketIO = require('socket.io');
+const http = require('http');
+const Table = require('./table');
 
-module.exports = class Server {
+module.exports = class Controller {
 
     constructor() {
-        this.DEFAULT_PORT = 3000
+        // this.PORT = 3000 || process.env.PORT
         this.app = express();
         this.httpServer = http.createServer(this.app);
         this.io = socketIO(this.httpServer);
@@ -38,9 +38,7 @@ module.exports = class Server {
         });
     }
 
-    listen(callback) {
-        this.httpServer.listen(this.DEFAULT_PORT, () =>
-            callback(this.DEFAULT_PORT)
-        );
+    listen(PORT) {
+        this.httpServer.listen(PORT,()=>console.log('Server is listening on http://localhost:'+PORT));
     }
 }

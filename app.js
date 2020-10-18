@@ -1,7 +1,7 @@
-const Server = require("./server.js");
+const Controller = require('./controller.js');
+
+const server = new Controller();
+
+const { PORT = 3000 } = process.env;
  
-const server = new Server();
- 
-server.listen( (port) => {
- console.log(`Server is listening on http://localhost:${port}`);
-});
+server.listen(PORT);
