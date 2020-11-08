@@ -3,7 +3,7 @@ const moongosee = require('mongoose');
 const { result } = require('lodash');
 
 module.exports = {
-    createUser: (user)=>{
+    createUser: async (user)=>{
         // console.log(user);
         const newUser = new User({
             _id: new moongosee.Types.ObjectId(),

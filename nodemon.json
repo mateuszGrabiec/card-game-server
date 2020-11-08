@@ -1,5 +1,6 @@
 {
     "env":{
-        "MONGO_PW": "admin"
+        "MONGO_PW": "admin",
+        "MONGO_ADDRESS":"127.0.0.1"
     }
 }
