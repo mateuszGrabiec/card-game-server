@@ -1,5 +1,4 @@
-const lodash = require("lodash");
-const { before } = require("lodash");
+const _ = require("lodash");
 module.exports = class Table {
     constructor() {
         this.table = Array(4).fill([]);
@@ -27,7 +26,7 @@ module.exports = class Table {
     }
 
     sortCardOnLine(line) {
-        return lodash.sortBy(line, ['x']);
+        return _.sortBy(line, ['x']);
     }
 
     updatePostionOnLines(field) {
