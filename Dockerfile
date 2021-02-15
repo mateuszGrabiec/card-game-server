@@ -1,11 +1,11 @@
-FROM node:latest
+FROM node:12.18.3
 LABEL maintainer="Mateusz Grabiec"
 
 RUN mkdir app
 WORKDIR /app
 
 COPY package*.json ./
-RUN  npm install
+RUN npm install
 
 COPY . .
 
