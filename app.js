@@ -1,6 +1,6 @@
 const {Controller} = require('./controller.js');
 const dotenv = require('dotenv');
-const initConnection = require('./services/dbConnector');
+const {initConnection} = require('./services/dbConnector');
 
 dotenv.config();
 

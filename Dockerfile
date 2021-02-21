@@ -1,4 +1,4 @@
-FROM node:12.18.3
+FROM node:latest
 LABEL maintainer="Mateusz Grabiec"
 
 RUN mkdir app
