@@ -4,8 +4,6 @@ const {initConnection} = require('./services/dbConnector');
 
 dotenv.config();
 
-console.log(process.env);
-
 console.info('Mode =',process.env.NODEENV);
 
 const server = new Controller();
