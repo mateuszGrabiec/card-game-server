@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 dotenv.config();
 
-const connetionString = process.env.NODE==='PROD' ? 
+const connetionString = process.env.NODEENV==='PROD' ? 
 	'mongodb'+process.env.MONGO_PRE+'://'+process.env.MONGO_USER+':'+process.env.MONGO_PW+'@'+process.env.MONGO_ADDRESS+'/'+process.env.MONGO_DBNAME+process.env.MONGO_PARAMS : 
 	'mongodb://'+process.env.MONGO_USER+':'+process.env.MONGO_PW+'@'+process.env.MONGO_ADDRESS+'/'+process.env.MONGO_DBNAME;
 
