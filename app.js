@@ -11,6 +11,6 @@ const server = new Controller();
 const { PORT = 3000 } = process.env;
 
 
-initConnection(function () {
+initConnection(()=> {
 	server.listen(PORT);
 });
