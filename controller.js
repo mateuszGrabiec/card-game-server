@@ -2,6 +2,11 @@ const express = require('express');
 const socketIO = require('socket.io');
 const http = require('http');
 const Table = require('./services/tableService');
+const passport = require('passport');
+const initializePassport = require('./passport-config');
+const flash = require('express-flash');
+const session = require('express-session');
+
 
 const bodyParser = require('body-parser');
 
@@ -11,12 +16,27 @@ const cardService = require('./services/cardService');
 class Controller {
 
 	constructor() {
+		initializePassport(passport, async(emailAddress)=>{
+			return await userService.getByMail(emailAddress);
+		}, async(id)=>{
+			return await userService.getById(id);
+		});
 		this.app = express();
 		this.httpServer = http.createServer(this.app);
 		this.app.use( bodyParser.json() );
 		this.app.use(bodyParser.urlencoded({
 			extended: true
 		})); 
+		this.app.set('view-engine','ejs');
+		this.app.use(flash());
+		this.app.use(session({
+			secret: 'XD',//process.env.SESSION_SECRET
+			resave: true,
+			saveUninitialized: true
+		}));
+		this.app.use(passport.initialize());
+		this.app.use(passport.session());
+
 		this.io = socketIO(this.httpServer);
 		this.handleRoutes();
 		this.handleSocketConnection();
@@ -25,15 +45,28 @@ class Controller {
 
 	handleRoutes() {
 		this.app.get('/',function(req, res){
-			res.send('Hello world!!');
+			// res.send('Hello world!!');
+			console.log(req.user);
+			res.render('index.ejs',{name: req?.user?.username});
 		});
 
-		this.app.post('/user',function(req, res){
+		this.app.post('/register',async(req, res) => {
 			// console.log(req.body);
-			userService.createUser(req.body);
-			res.send(req.body);
+			try{
+				const user = {
+					username:req.body.username,
+					password: req.body.password,
+					emailAddress:req.body.emailAddress
+				};
+				const out = await userService.createUser(user);
+				console.log(out);
+				res.send(user);
+			}catch(err){
+				res.status(400);
+				res.send({error:err});
+			}
 		});
-		this.app.get('/card',async function(req, res){
+		this.app.get('/card',async(req, res)=>{
 			// console.log(req.body);
 			// for(let i=0;i<5;i++){
 			// 	await cardService.createCard({
@@ -50,6 +83,15 @@ class Controller {
 			const cards = await cardService.getCards();
 			res.send({body:cards});
 		});
+		this.app.get('/admin/login',function(req, res){
+			// res.send('Hello world!!');
+			res.render('login.ejs');
+		});
+		this.app.post('/admin/login',passport.authenticate('local',{
+			successRedirect: '/',
+			failureRedirect: '/admin/login',
+			failureFlash:true
+		}));
 	}
 
 	handleSocketConnection() {
