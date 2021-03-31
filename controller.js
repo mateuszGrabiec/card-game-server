@@ -6,8 +6,7 @@ const passport = require('passport');
 const initializePassport = require('./passport-config');
 const flash = require('express-flash');
 const session = require('express-session');
-
-
+const cors = require('cors');
 const bodyParser = require('body-parser');
 
 const userService = require('./services/userService');
@@ -22,11 +21,10 @@ class Controller {
 			return await userService.getById(id);
 		});
 		this.app = express();
-		this.httpServer = http.createServer(this.app);
 		this.app.use( bodyParser.json() );
 		this.app.use(bodyParser.urlencoded({
 			extended: true
-		})); 
+		}));
 		this.app.set('view-engine','ejs');
 		this.app.use(flash());
 		this.app.use(session({
@@ -36,8 +34,17 @@ class Controller {
 		}));
 		this.app.use(passport.initialize());
 		this.app.use(passport.session());
+		this.app.options('*', cors());
 
-		this.io = socketIO(this.httpServer);
+		this.httpServer = http.createServer(this.app);
+		this.io = socketIO(this.httpServer,{
+			cors: {
+				origin: 'http://localhost:8080',
+				methods: ['GET', 'POST'],
+				// allowedHeaders: ['my-custom-header'],
+				credentials: true
+			}
+		});
 		this.handleRoutes();
 		this.handleSocketConnection();
 		this.table=new Table();
@@ -88,7 +95,7 @@ class Controller {
 			res.render('login.ejs');
 		});
 		this.app.post('/admin/login',passport.authenticate('local',{
-			successRedirect: '/',
+			successRedirect: 'http://localhost:8080/',
 			failureRedirect: '/admin/login',
 			failureFlash:true
 		}));
@@ -96,6 +103,10 @@ class Controller {
 
 	handleSocketConnection() {
 		this.io.on('connection', (socket) => {
+
+			console.log('A user connected: ' + socket.id);
+
+			this.io.emit('connected');
 
 			socket.on('getTable',()=>{
 				this.io.emit('sendTable',this.table.table);
